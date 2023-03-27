@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Cineaste</string>
+    <string name="search">Pretraži</string>
+    <string name="favorite">Omiljeni filmovi</string>
+    <string name="recent">Novi filmovi</string>
+</resources>
