@@ -3,4 +3,8 @@
     <string name="search">Search</string>
     <string name="favorite">Favorite movies</string>
     <string name="recent">Upcoming movies</string>
+
+    <string name="favoritesText">Hello favoritesText fragment</string>
+    <string name="recentTexts">Hello recentTexts fragment</string>
+
 </resources>

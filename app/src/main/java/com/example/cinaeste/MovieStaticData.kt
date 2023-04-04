@@ -15,7 +15,11 @@ fun getFavoriteMovies(): List<Movie> {
         Movie(4,"Pulp Fiction",
             "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.",
             "14.10.1994.","https://www.imdb.com/title/tt0110912/",
-            "crime")
+            "crime"),
+        Movie(5, "Titanic",
+        "A young woman falls in love with a wealthy man aboard the ill-fated Titanic ship.",
+        "19.19.1997", "https://www.imdb.com/title/tt0120338/", "romance")
+
     )
 }
 fun getRecentMovies(): List<Movie> {

@@ -4,4 +4,7 @@
     <string name="search">Pretraži</string>
     <string name="favorite">Omiljeni filmovi</string>
     <string name="recent">Novi filmovi</string>
+    <string name="favoritesText">Hello blank fragment</string>
+    <string name="recentTexts">Hello recentTexts fragment</string>
+
 </resources>
