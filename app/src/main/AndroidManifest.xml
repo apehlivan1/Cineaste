@@ -30,6 +30,7 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+
         <receiver android:name=".ConnectivityBroadcastReceiver"
             android:exported="false">
             <intent-filter>

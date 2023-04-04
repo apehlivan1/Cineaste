@@ -11,7 +11,11 @@ fun getFavoriteMovies(): List<Movie> {
         "action"),
         Movie(3, "The Hunger Games", "Capitol holds an annual televised competition known as the Hunger Games, in which a boy and a girl from each of the twelve districts are selected to fight to the death until only one survives.",
         "23.03.2012", "https://www.imdb.com/title/tt1392170/",
-        "action")
+        "action"),
+        Movie(4,"Pulp Fiction",
+            "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.",
+            "14.10.1994.","https://www.imdb.com/title/tt0110912/",
+            "crime")
     )
 }
 fun getRecentMovies(): List<Movie> {
