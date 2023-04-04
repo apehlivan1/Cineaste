@@ -1,4 +1,4 @@
-package com.example.cinaeste.view
+package com.example.cinaeste
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,12 +7,15 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cinaeste.R
-import com.example.cinaeste.data.Movie
 
-class MovieListAdapter(private var movies: List<Movie>) : RecyclerView.Adapter<MovieListAdapter.MovieViewHolder>() {
+class MovieListAdapter(
+    private var movies: List<Movie>,
+    private val onItemClicked: (movie:Movie) -> Unit
+) : RecyclerView.Adapter<MovieListAdapter.MovieViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_movie, parent, false)
+        val view = LayoutInflater
+            .from(parent.context)
+            .inflate(R.layout.item_movie, parent, false)
         return MovieViewHolder(view)
     }
     override fun getItemCount(): Int = movies.size
@@ -21,9 +24,12 @@ class MovieListAdapter(private var movies: List<Movie>) : RecyclerView.Adapter<M
         val genreMatch: String = movies[position].genre
         //Pronalazimo id drawable elementa na osnovu naziva zanra
         val context: Context = holder.movieImage.context
-        var id: Int = context.resources.getIdentifier(genreMatch, "drawable", context.packageName)
-        if (id==0) id=context.resources.getIdentifier("picture1", "drawable", context.packageName)
+        var id: Int = context.resources
+            .getIdentifier(genreMatch, "drawable", context.packageName)
+        if (id==0) id=context.resources
+            .getIdentifier("picture1", "drawable", context.packageName)
         holder.movieImage.setImageResource(id)
+        holder.itemView.setOnClickListener{ onItemClicked(movies[position]) }
     }
     fun updateMovies(movies: List<Movie>) {
         this.movies = movies

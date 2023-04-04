@@ -1,6 +1,6 @@
-package com.example.cinaeste.data
+package com.example.cinaeste
 
-fun favoriteMovies(): List<Movie> {
+fun getFavoriteMovies(): List<Movie> {
     return listOf(
         Movie(1,"Pride and prejudice",
             "Sparks fly when spirited Elizabeth Bennet meets single, rich, and proud Mr. Darcy. But Mr. Darcy reluctantly finds himself falling in love with a woman beneath his class. Can each overcome their own pride and prejudice?",
@@ -14,7 +14,7 @@ fun favoriteMovies(): List<Movie> {
         "action")
     )
 }
-fun recentMovie(): List<Movie> {
+fun getRecentMovies(): List<Movie> {
     return listOf(
         Movie(1,"Creed III",
             "Adonis has been thriving in both his career and family life, but when a c hildhood friend and former boxing prodigy resurfaces, the face-off is more than just a fight.",
