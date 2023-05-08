@@ -10,7 +10,15 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.bumptech.glide.Glide
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class MovieDetailActivity : AppCompatActivity() {
     private lateinit var movie: Movie
@@ -21,7 +29,9 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var website : TextView
     private lateinit var poster : ImageView
     private lateinit var shareButton : FloatingActionButton
-
+    private lateinit var backdrop : ImageView
+    private val posterPath = "https://image.tmdb.org/t/p/w780"
+    private val backdropPath = "https://image.tmdb.org/t/p/w500"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie_detail)
@@ -30,12 +40,18 @@ class MovieDetailActivity : AppCompatActivity() {
         releaseDate = findViewById(R.id.movie_release_date)
         genre = findViewById(R.id.movie_genre)
         poster = findViewById(R.id.movie_poster)
+        backdrop = findViewById(R.id.movie_backdrop)
         website = findViewById(R.id.movie_website)
         shareButton = findViewById(R.id.shareButton)
         val extras = intent.extras
         if (extras != null) {
-            movie = getMovieByTitle(extras.getString("movie_title",""))
-            populateDetails()
+            if (extras.containsKey("movie_title")) {
+                movie = getMovieByTitle(extras.getString("movie_title", ""))
+                populateDetails()
+            }
+            else if (extras.containsKey("movie_id")){
+                getMovieDetails(extras.getLong("movie_id"))
+            }
         } else {
             finish()
         }
@@ -48,6 +64,10 @@ class MovieDetailActivity : AppCompatActivity() {
         shareButton.setOnClickListener{
             shareOverview()
         }
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment1) as NavHostFragment
+        val navController = navHostFragment.navController
+        val navView: BottomNavigationView = findViewById(R.id.bottomNavigation1)
+        navView.setupWithNavController(navController)
     }
     private fun populateDetails() {
         title.text=movie.title
@@ -61,16 +81,30 @@ class MovieDetailActivity : AppCompatActivity() {
         if (id===0) id=context.resources
             .getIdentifier("picture1", "drawable", context.packageName)
         poster.setImageResource(id)
+        Glide.with(context)
+            .load(posterPath + movie.posterPath)
+            .placeholder(R.drawable.picture1)
+            .error(id)
+            .fallback(id)
+            .into(poster)
+        val backdropContext: Context = backdrop.context
+        Glide.with(backdropContext)
+            .load(backdropPath + movie.backdropPath)
+            .centerCrop()
+            .placeholder(R.drawable.backdrop)
+            .error(R.drawable.backdrop)
+            .fallback(R.drawable.backdrop)
+            .into(backdrop)
     }
     private fun getMovieByTitle(name:String):Movie{
         val movies: ArrayList<Movie> = arrayListOf()
         movies.addAll(getRecentMovies())
         movies.addAll(getFavoriteMovies())
         val movie= movies.find { movie -> name == movie.title }
-        return movie?:Movie(0,"Test","Test","Test","Test","Test")
+        return movie?:Movie(0,"Test","Test","Test","Test","Test","Test","Test")
     }
     private fun showWebsite(){
-        val webIntent: Intent = Intent(Intent.ACTION_VIEW, Uri.parse(movie.homepage))
+        val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse(movie.homepage))
         try {
             startActivity(webIntent)
         } catch (e: ActivityNotFoundException) {
@@ -96,5 +130,19 @@ class MovieDetailActivity : AppCompatActivity() {
         }
         val shareIntent = Intent.createChooser(intent, null)
         startActivity(shareIntent)
+    }
+
+    private fun getMovieDetails(query: Long){
+        val scope = CoroutineScope(Job() + Dispatchers.Main)
+        scope.launch{
+            when (val result = MovieRepository.getMovieDetails(query)) {
+                is Result.Success<Movie> -> movieRetrieved(result.data)
+                else-> Log.v("meh","meh")
+            }
+        }
+    }
+    private fun movieRetrieved(movie:Movie){
+        this.movie = movie
+        populateDetails()
     }
 }

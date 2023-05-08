@@ -1,6 +1,8 @@
 package com.example.cinaeste
 
+import android.content.BroadcastReceiver
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
@@ -9,6 +11,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
+    private val br: BroadcastReceiver = ConnectivityBroadcastReceiver()
+    private val filter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -24,5 +29,14 @@ class MainActivity : AppCompatActivity() {
                 navController.navigate(R.id.searchFragment,bundle)
             }
         }
+    }
+    override fun onResume() {
+        super.onResume()
+        registerReceiver(br, filter)
+    }
+
+    override fun onPause() {
+        unregisterReceiver(br)
+        super.onPause()
     }
 }
