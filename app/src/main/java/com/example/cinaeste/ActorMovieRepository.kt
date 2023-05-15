@@ -12,7 +12,7 @@ import java.net.URL
 
 object ActorMovieRepository {
 
-    private const val tmdb_api_key : String = "a1ae4918896c5e634c61d597d471e7fd"
+    private const val tmdb_api_key : String = BuildConfig.TMDB_API_KEY
 
 
     suspend fun getActors(
