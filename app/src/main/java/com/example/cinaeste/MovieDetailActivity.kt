@@ -2,7 +2,6 @@ package com.example.cinaeste
 
 import android.app.SearchManager
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -12,7 +11,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.CoroutineScope
@@ -72,11 +70,10 @@ class MovieDetailActivity : AppCompatActivity() {
     private fun populateDetails() {
         title.text=movie.title
         releaseDate.text=movie.releaseDate
-        genre.text=movie.genre
+        //genre.text=movie.genre
         website.text=movie.homepage
         overview.text=movie.overview
-        val context: Context = poster.context
-        var id: Int = context.resources
+        /*val context: Context = poster.context var id: Int = context.resources
             .getIdentifier(movie.genre, "drawable", context.packageName)
         if (id===0) id=context.resources
             .getIdentifier("picture1", "drawable", context.packageName)
@@ -94,14 +91,14 @@ class MovieDetailActivity : AppCompatActivity() {
             .placeholder(R.drawable.backdrop)
             .error(R.drawable.backdrop)
             .fallback(R.drawable.backdrop)
-            .into(backdrop)
+            .into(backdrop)*/
     }
     private fun getMovieByTitle(name:String):Movie{
         val movies: ArrayList<Movie> = arrayListOf()
         movies.addAll(getRecentMovies())
         movies.addAll(getFavoriteMovies())
         val movie= movies.find { movie -> name == movie.title }
-        return movie?:Movie(0,"Test","Test","Test","Test","Test","Test","Test")
+        return movie?:Movie(0,"Test","Test","Test","Test","Test","Test")
     }
     private fun showWebsite(){
         val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse(movie.homepage))

@@ -31,7 +31,7 @@ class LatestMovieService : Service() {
     //api kljuc
     private val tmdb_api_key : String = BuildConfig.TMDB_API_KEY
     //primjer filma- novi filmovi ne moraju sadrzavati sve podatke
-    private var movie = Movie(1,"test","test","test","test","test","test","test")
+    private var movie = Movie(1,"test","test","test","test","test","test")
 
     override fun onBind(intent: Intent): IBinder? {
         return null

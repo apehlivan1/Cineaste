@@ -25,7 +25,7 @@ class ActorsFragment: Fragment() {
 
         if (extras != null) {
             if (extras.containsKey("movie_title")) {
-                actorsList = getMovieActors()?.get(extras.getString("movie_title"))?: emptyList()
+                actorsList = getMovieActors()[extras.getString("movie_title")] ?: emptyList()
 
             }
             else if (extras.containsKey("movie_id")){

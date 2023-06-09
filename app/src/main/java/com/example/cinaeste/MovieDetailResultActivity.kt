@@ -1,17 +1,15 @@
 package com.example.cinaeste
 
 import android.app.NotificationManager
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.bumptech.glide.Glide
 
 class MovieDetailResultActivity: AppCompatActivity() {
-    private  var movie= Movie(0, "Test", "Test", "Test", "Test", "Test", "Test", "Test")
+    private  var movie= Movie(0, "Test", "Test", "Test", "Test", "Test", "Test")
     private lateinit var title : TextView
     private lateinit var overview : TextView
     private lateinit var releaseDate : TextView
@@ -53,10 +51,10 @@ class MovieDetailResultActivity: AppCompatActivity() {
     private fun populateDetails() {
         title.text=movie.title
         releaseDate.text=movie.releaseDate
-        genre.text=movie.genre
+        //genre.text=movie.genre
         website.text=movie.homepage
         overview.text=movie.overview
-        val context: Context = poster.getContext()
+        /*val context: Context = poster.getContext()
         var id = 0
         if (movie.genre!==null)
             id = context.getResources()
@@ -76,7 +74,7 @@ class MovieDetailResultActivity: AppCompatActivity() {
             .placeholder(R.drawable.backdrop)
             .error(R.drawable.backdrop)
             .fallback(R.drawable.backdrop)
-            .into(backdrop)
+            .into(backdrop)*/
     }
 
 }
