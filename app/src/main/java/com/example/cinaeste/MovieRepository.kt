@@ -1,5 +1,6 @@
 package com.example.cinaeste
 
+import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
@@ -128,6 +129,26 @@ object MovieRepository {
         return withContext(Dispatchers.IO) {
             val response = ApiAdapter.retrofit.getUpcomingMovies()
             return@withContext response.body()
+        }
+    }
+
+    suspend fun getFavoriteMovies(context: Context) : List<Movie> {
+        return withContext(Dispatchers.IO) {
+            var db = AppDatabase.getInstance(context)
+            var movies = db!!.movieDao().getAll()
+            return@withContext movies
+        }
+    }
+    suspend fun writeFavorite(context: Context,movie:Movie) : String?{
+        return withContext(Dispatchers.IO) {
+            try{
+                var db = AppDatabase.getInstance(context)
+                db!!.movieDao().insertAll(movie)
+                return@withContext "success"
+            }
+            catch(error:Exception){
+                return@withContext null
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ad"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -8,11 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigation1"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        >
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -41,9 +41,9 @@
 
                 <ImageView
                     android:id="@+id/movie_poster"
-                    android:transitionName="poster"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:transitionName="poster" />
 
             </androidx.cardview.widget.CardView>
 
@@ -103,8 +103,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:barrierDirection="bottom"
-                app:constraint_referenced_ids="movie_release_date,movie_poster_card,movie_genre,movie_website"
-                />
+                app:constraint_referenced_ids="movie_release_date,movie_poster_card,movie_genre,movie_website" />
 
             <TextView
                 android:id="@+id/movie_overview"
@@ -125,12 +124,22 @@
                 android:name="androidx.navigation.fragment.NavHostFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:defaultNavHost="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/movie_overview"
-                app:defaultNavHost="true"
                 app:navGraph="@navigation/navgraph1" />
+
+            <Button
+                android:id="@+id/favouriteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="28dp"
+                android:text="ADD TO FAVOURITE"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
@@ -139,26 +148,28 @@
         android:id="@+id/shareButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
         android:layout_marginRight="20dp"
+        android:layout_marginBottom="50dp"
         android:backgroundTint="@color/highlightColor"
         android:clickable="true"
         android:contentDescription="Share button"
         android:src="@android:drawable/ic_menu_share"
         android:tint="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigation1"
         app:layout_anchor="@id/bottomNavigation1"
         app:layout_anchorGravity="bottom|right|end"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation1"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteY="638dp"  />
+        tools:layout_editor_absoluteY="638dp" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:itemBackground="@color/primaryDarkColor"
         android:background="@color/primaryDarkColor"
+        android:translationZ="10dp"
+        app:itemBackground="@color/primaryDarkColor"
         app:itemIconTint="@color/navigation_selected"
         app:itemTextColor="@color/navigation_selected"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -167,6 +178,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        android:translationZ="10dp"
         app:menu="@menu/menu1" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,12 +2,16 @@ package com.example.cinaeste
 
 import android.app.SearchManager
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -28,6 +32,7 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var poster : ImageView
     private lateinit var shareButton : FloatingActionButton
     private lateinit var backdrop : ImageView
+    private lateinit var addFavorite: Button
     private val posterPath = "https://image.tmdb.org/t/p/w780"
     private val backdropPath = "https://image.tmdb.org/t/p/w500"
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +46,7 @@ class MovieDetailActivity : AppCompatActivity() {
         backdrop = findViewById(R.id.movie_backdrop)
         website = findViewById(R.id.movie_website)
         shareButton = findViewById(R.id.shareButton)
+        addFavorite = findViewById(R.id.favouriteButton)
         val extras = intent.extras
         if (extras != null) {
             if (extras.containsKey("movie_title")) {
@@ -61,6 +67,9 @@ class MovieDetailActivity : AppCompatActivity() {
         }
         shareButton.setOnClickListener{
             shareOverview()
+        }
+        addFavorite.setOnClickListener{
+            writeDB(this,movie)
         }
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment1) as NavHostFragment
         val navController = navHostFragment.navController
@@ -141,5 +150,26 @@ class MovieDetailActivity : AppCompatActivity() {
     private fun movieRetrieved(movie:Movie){
         this.movie = movie
         populateDetails()
+    }
+
+    fun writeDB(context: Context, movie:Movie){
+        val scope = CoroutineScope(Job() + Dispatchers.Main)
+        scope.launch{
+            val result = MovieRepository.writeFavorite(context,movie)
+            when (result) {
+                is String -> onSuccess1(result)
+                else-> onError()
+            }
+        }
+    }
+
+    fun onSuccess1(message:String){
+        val toast = Toast.makeText(applicationContext, "Spaseno", Toast.LENGTH_SHORT)
+        toast.show()
+        addFavorite.visibility = View.GONE
+    }
+    fun onError() {
+        val toast = Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT)
+        toast.show()
     }
 }
