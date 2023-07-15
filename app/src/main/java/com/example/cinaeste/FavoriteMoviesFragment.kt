@@ -31,32 +31,38 @@ class FavoriteMoviesFragment : Fragment() {
         }
         return view
     }
+    override fun onResume() {
+        context?.let {
+            getFavorites(it)
+        }
+        super.onResume()
+    }
     private fun showMovieDetails(movie: Movie) {
         val intent = Intent(activity, MovieDetailActivity::class.java).apply {
-            putExtra("movie_title", movie.title)
+            putExtra("movie_id", movie.id)
+            putExtra("exists", true)
         }
         startActivity(intent)
     }
 
-    fun getFavorites(context: Context){
+    private fun getFavorites(context: Context){
         val scope = CoroutineScope(Job() + Dispatchers.Main)
         // Create a new coroutine on the UI thread
         scope.launch{
 
             // Make the network call and suspend execution until it finishes
-            val result = MovieRepository.getFavoriteMovies(context)
 
             // Display result of the network request to the user
-            when (result) {
+            when (val result = MovieRepository.getFavoriteMovies(context)) {
                 is List<Movie> -> onSuccess(result)
                 else-> onError()
             }
         }
     }
-    fun onSuccess(movies:List<Movie>){
+    private fun onSuccess(movies:List<Movie>){
         favMoviesAdapter.updateMovies(movies)
     }
-    fun onError() {
+    private fun onError() {
         val toast = Toast.makeText(context, "Error", Toast.LENGTH_SHORT)
         toast.show()
     }

@@ -29,7 +29,6 @@ class SearchFragment : Fragment() {
         arguments?.getString("search")?.let {
             searchText.setText(it)
         }
-
         searchButton = view.findViewById(R.id.searchButton)
         searchMovies = view.findViewById(R.id.searchList)
         searchMovies.layoutManager = GridLayoutManager(activity, 2)
@@ -51,7 +50,7 @@ class SearchFragment : Fragment() {
             // Vrti se poziv servisa i suspendira se rutina dok se `withContext` ne zavrsii
             // Prikaze se rezultat korisniku na glavnoj niti
             when (val result = MovieRepository.searchRequest(query)) {
-                is Result.Success<List<Movie>> -> searchDone(result.data)
+                is GetMoviesResponse -> searchDone(result.movies)
                 else-> onError()
             }
         }

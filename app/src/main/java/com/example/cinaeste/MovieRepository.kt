@@ -3,15 +3,11 @@ package com.example.cinaeste
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
-import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.MalformedURLException
-import java.net.URL
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-//modelira povrat mreznog poziva
+
 sealed class Result<out R> {
     data class Success<out T>(val data: T) : Result<T>()
     data class Error(val exception: Exception) : Result<Nothing>()
@@ -19,131 +15,112 @@ sealed class Result<out R> {
 
 object MovieRepository {
 
-    private const val tmdb_api_key : String = BuildConfig.TMDB_API_KEY
-
-    suspend fun searchRequest(
-        query: String
-    ): Result<List<Movie>>{
+    suspend fun searchRequest(query: String): GetMoviesResponse? {
         return withContext(Dispatchers.IO) {
-            try {
-                val movies = arrayListOf<Movie>()
-                //formira se url
-                val url1 =
-                    "https://api.themoviedb.org/3/search/movie?api_key=$tmdb_api_key&query=$query"
-                //otvara se konekcija i poziva web servis
-                val url = URL(url1)
-                (url.openConnection() as? HttpURLConnection)?.run {
-                    //rezultat poziva
-                    val result = this.inputStream.bufferedReader().use { it.readText() }
-                    //rezultat u JSON formatu
-                    val jo = JSONObject(result)
-                    val results = jo.getJSONArray("results")
-                    for (i in 0 until results.length()) {
-                        val movie = results.getJSONObject(i)
-                        val title = movie.getString("title")
-                        val id = movie.getInt("id")
-                        val posterPath = movie.getString("poster_path")
-                        val overview = movie.getString("overview")
-                        val releaseDate = movie.getString("release_date")
-                        movies.add(Movie(id.toLong(), title, overview, releaseDate, null, posterPath, " "))
-                        if (i == 5) break
-                    }
-                }
-                return@withContext Result.Success(movies)
-            }
-            catch (e: MalformedURLException) {
-                return@withContext Result.Error(Exception("Cannot open HttpURLConnection"))
-            } catch (e: IOException) {
-                return@withContext Result.Error(Exception("Cannot read stream"))
-            } catch (e: JSONException) {
-                return@withContext Result.Error(Exception("Cannot parse JSON"))
-            }
-        }
-    }
-    suspend fun getMovieDetails(
-        id: Long
-    ):Result<Movie>{
-        return withContext(Dispatchers.IO) {
-            val url1 = "https://api.themoviedb.org/3/movie/$id?api_key=$tmdb_api_key"
-            try {
-                val url = URL(url1)
-                val movie = Movie(0, "Test", "Test", "Test", "Test", "Test", "Test")
-                (url.openConnection() as? HttpURLConnection)?.run {
-                    val result = this.inputStream.bufferedReader().use { it.readText() }
-                    val jsonObject = JSONObject(result)
-                    movie.title = jsonObject.getString("title")
-                    movie.id = jsonObject.getLong("id")
-                    movie.posterPath = jsonObject.getString("poster_path")
-                    movie.overview = jsonObject.getString("overview")
-                    movie.releaseDate = jsonObject.getString("release_date")
-                    movie.homepage = jsonObject.getString("homepage")
-                    movie.backdropPath = jsonObject.getString("backdrop_path")
-                    //movie.genre = jsonObject.getJSONArray("genres").getJSONObject(0).getString("name")
-                }
-                return@withContext Result.Success(movie)
-            }
-            catch (e: MalformedURLException) {
-                return@withContext Result.Error(Exception("Cannot open HttpURLConnection"))
-            } catch (e: IOException) {
-                return@withContext Result.Error(Exception("Cannot read stream"))
-            } catch (e: JSONException) {
-                return@withContext Result.Error(Exception("Cannot parse JSON"))
-            }
+            val response = ApiAdapter.retrofit.searchMovie(query)
+            return@withContext response.body()
         }
     }
 
-
-    suspend fun getSimilarMoviesAPI(
-        id: Long
-    ): Result<MutableList<String>> {
+    suspend fun getSimilarMovies(id: Long): GetSimilarResponse? {
         return withContext(Dispatchers.IO) {
-            val url1 = "https://api.themoviedb.org/3/movie/$id/similar?api_key=$tmdb_api_key"
-            try {
-                val url = URL(url1)
-                val similar:MutableList<String> = mutableListOf()
-                (url.openConnection() as? HttpURLConnection)?.run {
-                    val result = this.inputStream.bufferedReader().use { it.readText() }
-                    val jo = JSONObject(result)
-                    val items: JSONArray = jo.getJSONArray("results")
-                    for (i in 0 until items.length()) {
-                        val slicni = items.getJSONObject(i)
-                        val title = slicni.getString("title")
-                        similar.add(title)
-                        if (i == 4) break
-                    }
-                }
-                return@withContext Result.Success(similar)
-            }
-            catch (e: MalformedURLException) {
-                return@withContext Result.Error(Exception("Cannot open HttpURLConnection"))
-            } catch (e: IOException) {
-                return@withContext Result.Error(Exception("Cannot read stream"))
-            } catch (e: JSONException) {
-                return@withContext Result.Error(Exception("Cannot parse JSON"))
-            }
+            val response = ApiAdapter.retrofit.getSimilar(id)
+            return@withContext response.body()
         }
     }
 
-    suspend fun getUpcomingMovies(
-    ) : GetMoviesResponse?{
+    suspend fun getUpcomingMovies(): GetMoviesResponse? {
         return withContext(Dispatchers.IO) {
             val response = ApiAdapter.retrofit.getUpcomingMovies()
             return@withContext response.body()
         }
     }
 
-    suspend fun getFavoriteMovies(context: Context) : List<Movie> {
+    suspend fun getMovie(id: Long): Movie? {
         return withContext(Dispatchers.IO) {
-            var db = AppDatabase.getInstance(context)
-            var movies = db!!.movieDao().getAll()
-            return@withContext movies
+            val response = ApiAdapter.retrofit.getMovie(id)
+            return@withContext response.body()
         }
     }
-    suspend fun writeFavorite(context: Context,movie:Movie) : String?{
+
+    fun getUpcomingMovies2(
+        onSuccess: (movies: List<Movie>) -> Unit,
+        onError: () -> Unit
+    ) {
+        ApiAdapter.retrofit.getUpcomingMovies2()
+            .enqueue(object : Callback<GetMoviesResponse> {
+                override fun onResponse(
+                    call: Call<GetMoviesResponse>,
+                    response: Response<GetMoviesResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        val responseBody = response.body()
+
+                        if (responseBody != null) {
+                            onSuccess.invoke(responseBody.movies)
+                        } else {
+                            onError.invoke()
+                        }
+                    } else {
+                        onError.invoke()
+                    }
+                }
+
+                override fun onFailure(call: Call<GetMoviesResponse>, t: Throwable) {
+                    onError.invoke()
+                }
+            })
+    }
+
+    suspend fun getFavoriteMovies(context: Context): List<Movie> {
+        return withContext(Dispatchers.IO) {
+            val db = AppDatabase.getInstance(context)
+            return@withContext db.movieDao().getAll()
+        }
+    }
+    suspend fun deleteMovie(context: Context, movie: Movie): String?{
+        return withContext(Dispatchers.IO){
+            try {
+                val db = AppDatabase.getInstance(context)
+                val cast = db.movieDao().getMovieAndCastById(movie.id)
+                db.castDao().deleteCast(cast.cast)
+                val similar = db.movieDao().getSimilarMoviesById(movie.id)
+                val similarPairs = similar.similarMovies.map { similar -> SimilarMovies(movie.id, similar.id) }
+                for(similarPair in similarPairs){
+                    db.similarMoviesDao().deleteSimilar(similarPair)
+                }
+                db.similarMoviesDao().deleteSimilarMovies(similar.similarMovies)
+                db.movieDao().delete(movie)
+
+                return@withContext "Obrisano"
+            }catch (error:Exception){
+                return@withContext null
+            }
+        }
+    }
+    suspend fun writeFavorite(context: Context, movie: Movie): String? {
         return withContext(Dispatchers.IO) {
             try{
-                var db = AppDatabase.getInstance(context)
-                db!!.movieDao().insertAll(movie)
+                val db = AppDatabase.getInstance(context)
+                movie.favourite = 1
+                db.movieDao().insertAll(movie)
+                val response = ActorMovieRepository.getCast(movie.id)
+                val cast = response?.cast
+                if(cast != null){
+                    for (castX in cast) {
+                        castX.fromMovieId = movie.id
+                        db.castDao().insertAll(castX)
+                    }
+                }
+                val similarResponse = getSimilarMovies(movie.id)
+                val simiar = similarResponse?.movies
+                if(simiar != null){
+                    for(sm in simiar){
+                        val newSM = SimilarMovies(movieId = movie.id, similarMovieId = sm.id)
+                        db.movieDao().insertAll(sm)
+                        db.similarMoviesDao().insert(newSM)
+                    }
+                }
                 return@withContext "success"
             }
             catch(error:Exception){
@@ -151,4 +128,25 @@ object MovieRepository {
             }
         }
     }
+    suspend fun getMovieDB(context: Context, id:Long): Movie {
+        return withContext(Dispatchers.IO) {
+            val db = AppDatabase.getInstance(context)
+            return@withContext db.movieDao().findById(id)
+        }
+    }
+    suspend fun getCastDB(context: Context, id:Long): List<Cast> {
+        return withContext(Dispatchers.IO){
+            val db = AppDatabase.getInstance(context)
+            val cast = db.movieDao().getMovieAndCastById(id)
+            return@withContext cast.cast
+        }
+    }
+    suspend fun getSimilarMoviesDB(context: Context, id:Long): List<Movie> {
+        return withContext(Dispatchers.IO){
+            val db = AppDatabase.getInstance(context)
+            val similarMovies = db.movieDao().getSimilarMoviesById(id)
+            return@withContext similarMovies.similarMovies
+        }
+    }
+
 }

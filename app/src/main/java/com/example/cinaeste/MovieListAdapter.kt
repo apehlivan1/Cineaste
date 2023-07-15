@@ -1,5 +1,6 @@
 package com.example.cinaeste
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -7,11 +8,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 
 class MovieListAdapter(
     private var movies: List<Movie>,
     private val onItemClicked: (movie:Movie) -> Unit
 ) : RecyclerView.Adapter<MovieListAdapter.MovieViewHolder>() {
+
     private val posterPath = "https://image.tmdb.org/t/p/w342"
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val view = LayoutInflater
@@ -22,14 +25,9 @@ class MovieListAdapter(
     override fun getItemCount(): Int = movies.size
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         holder.movieTitle.text = movies[position].title
-        //val genreMatch: String? = movies[position].genre
-        //Pronalazimo id drawable elementa na osnovu naziva zanra
+        //Pronalazimo id drawable elementa na osnovu naziva žanra
         val context: Context = holder.movieImage.context
-        var id = 0
-        /*if (genreMatch!==null)
-            id = context.resources
-                .getIdentifier(genreMatch, "drawable", context.packageName)
-        if (id===0) id=context.resources
+        val id: Int = context.resources
             .getIdentifier("picture1", "drawable", context.packageName)
         Glide.with(context)
             .load(posterPath + movies[position].posterPath)
@@ -38,8 +36,9 @@ class MovieListAdapter(
             .error(id)
             .fallback(id)
             .into(holder.movieImage)
-        holder.itemView.setOnClickListener{ onItemClicked(movies[position]) }*/
+        holder.itemView.setOnClickListener{ onItemClicked(movies[position]) }
     }
+    @SuppressLint("NotifyDataSetChanged")
     fun updateMovies(movies: List<Movie>) {
         this.movies = movies
         notifyDataSetChanged()

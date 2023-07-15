@@ -1,4 +1,5 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ad"
@@ -26,7 +27,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/backdrop" />
+                app:srcCompat="@drawable/backdrop"
+                android:contentDescription="@string/backdrop_image" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/movie_poster_card"
@@ -43,7 +45,8 @@
                     android:id="@+id/movie_poster"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:transitionName="poster" />
+                    android:transitionName="poster"
+                    android:contentDescription="@string/movie_poster" />
 
             </androidx.cardview.widget.CardView>
 
@@ -54,6 +57,30 @@
                 android:orientation="horizontal"
 
                 app:layout_constraintGuide_begin="250dp" />
+
+            <Button
+                android:id="@+id/favorites"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="@color/highlightColor"
+                android:text="@string/add_to_favorites"
+                app:layout_constraintEnd_toEndOf="@+id/movie_backdrop"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/deleteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="@color/highlightColor"
+                android:text="@string/delete_from_favorites"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/movie_backdrop"
+                app:layout_constraintTop_toTopOf="parent"
+                />
 
             <TextView
                 android:id="@+id/movie_title"
@@ -131,16 +158,6 @@
                 app:layout_constraintTop_toBottomOf="@id/movie_overview"
                 app:navGraph="@navigation/navgraph1" />
 
-            <Button
-                android:id="@+id/favouriteButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="28dp"
-                android:text="ADD TO FAVOURITE"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -148,11 +165,11 @@
         android:id="@+id/shareButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="20dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="50dp"
         android:backgroundTint="@color/highlightColor"
         android:clickable="true"
-        android:contentDescription="Share button"
+        android:contentDescription="@string/share_button"
         android:src="@android:drawable/ic_menu_share"
         android:tint="#FFFFFF"
         app:layout_anchor="@id/bottomNavigation1"

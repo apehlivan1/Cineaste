@@ -1,5 +1,6 @@
 package com.example.cinaeste
 
+import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
 import android.content.Intent
@@ -30,7 +31,7 @@ class LatestMovieService : Service() {
     private var isServiceStarted = false
     //api kljuc
     private val tmdb_api_key : String = BuildConfig.TMDB_API_KEY
-    //primjer filma- novi filmovi ne moraju sadrzavati sve podatke
+    //primjer filma - novi filmovi ne moraju sadrzavati sve podatke
     private var movie = Movie(1,"test","test","test","test","test","test")
 
     override fun onBind(intent: Intent): IBinder? {
@@ -105,6 +106,7 @@ class LatestMovieService : Service() {
         }
     }
 
+    @SuppressLint("UnspecifiedImmutableFlag")
     private fun getData() {
         try {
             val url1 =

@@ -1,12 +1,14 @@
 package com.example.cinaeste
 
 import android.app.NotificationManager
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 
 class MovieDetailResultActivity: AppCompatActivity() {
     private  var movie= Movie(0, "Test", "Test", "Test", "Test", "Test", "Test")
@@ -41,40 +43,34 @@ class MovieDetailResultActivity: AppCompatActivity() {
             }
         } else {
             if (intent?.getParcelableExtra<Movie>("movie") !== null) {
-                movie = intent?.getParcelableExtra<Movie>("movie")!!
+                movie = intent?.getParcelableExtra("movie")!!
                 populateDetails()
             }
         }
-
     }
 
     private fun populateDetails() {
         title.text=movie.title
         releaseDate.text=movie.releaseDate
-        //genre.text=movie.genre
         website.text=movie.homepage
         overview.text=movie.overview
-        /*val context: Context = poster.getContext()
-        var id = 0
-        if (movie.genre!==null)
-            id = context.getResources()
-                .getIdentifier(movie.genre, "drawable", context.getPackageName())
-        if (id===0) id=context.getResources()
-            .getIdentifier("picture1", "drawable", context.getPackageName())
+        val context: Context = poster.context
+        val id = context.resources
+            .getIdentifier("picture1", "drawable", context.packageName)
         Glide.with(context)
             .load(posterPath + movie.posterPath)
             .placeholder(R.drawable.picture1)
             .error(id)
             .fallback(id)
             .into(poster)
-        var backdropContext: Context = backdrop.getContext()
+        val backdropContext = backdrop.context
         Glide.with(backdropContext)
             .load(backdropPath + movie.backdropPath)
             .centerCrop()
             .placeholder(R.drawable.backdrop)
             .error(R.drawable.backdrop)
             .fallback(R.drawable.backdrop)
-            .into(backdrop)*/
-    }
+            .into(backdrop)
 
+    }
 }

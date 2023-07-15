@@ -17,33 +17,29 @@ import kotlinx.coroutines.launch
 class RecentMoviesFragment : Fragment() {
     private lateinit var recentMovies: RecyclerView
     private lateinit var recentMoviesAdapter: MovieListAdapter
-    private var recentMoviesList =  getRecentMovies()
+    private var recentMoviesList =  arrayListOf<Movie>()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view =  inflater.inflate(R.layout.fragment_recent_movies, container, false)
         recentMovies = view.findViewById(R.id.recentMovies)
         recentMovies.layoutManager = GridLayoutManager(activity, 2)
         recentMoviesAdapter = MovieListAdapter(arrayListOf()) { movie -> showMovieDetails(movie) }
-        recentMovies.adapter=recentMoviesAdapter
+        recentMovies.adapter = recentMoviesAdapter
         recentMoviesAdapter.updateMovies(recentMoviesList)
+        getUpcoming()
         return view
     }
     private fun showMovieDetails(movie: Movie) {
         val intent = Intent(activity, MovieDetailActivity::class.java).apply {
-            putExtra("movie_title", movie.title)
+            putExtra("movie_id", movie.id)
         }
         startActivity(intent)
     }
 
-    suspend fun getUpcoming(){
+    private fun getUpcoming( ){
         val scope = CoroutineScope(Job() + Dispatchers.Main)
-        // Create a new coroutine on the UI thread
-        scope.launch {
-            // Option 1
-            // Display result of the network request to the user
-            when (val result = MovieRepository.getUpcomingMovies()) {
-                is GetMoviesResponse -> onSuccess(result.movies)
-                else -> onError()
-            }
+        scope.launch{
+            MovieRepository.getUpcomingMovies2(onSuccess = ::onSuccess,
+                onError = ::onError)
         }
     }
     private fun onSuccess(movies:List<Movie>){
