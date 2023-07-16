@@ -1,16 +1,15 @@
-package com.example.cinaeste
+package com.example.cinaeste.adapters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.cinaeste.data.Movie
 
-class SimpleStringAdapter(list: List<String>) :RecyclerView.Adapter<SimpleStringAdapter.SimpleViewHolder>() {
-
-    var list = list
+class SimpleSimilarStringAdapter(var list: List<Movie>) : RecyclerView.Adapter<SimpleSimilarStringAdapter.SimpleViewHolder>() {
     inner class SimpleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textElement = itemView.findViewById<TextView>(android.R.id.text1)
+        val textElement = itemView.findViewById<TextView>(android.R.id.text1)!!
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SimpleViewHolder {
@@ -25,6 +24,6 @@ class SimpleStringAdapter(list: List<String>) :RecyclerView.Adapter<SimpleString
     }
 
     override fun onBindViewHolder(holder: SimpleViewHolder, position: Int) {
-        holder.textElement.text=list[position]
+        holder.textElement.text = list[position].title
     }
 }

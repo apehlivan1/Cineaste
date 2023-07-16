@@ -1,4 +1,4 @@
-package com.example.cinaeste
+package com.example.cinaeste.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -9,10 +9,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.cinaeste.data.Movie
+import com.example.cinaeste.R
 
 class MovieListAdapter(
     private var movies: List<Movie>,
-    private val onItemClicked: (movie:Movie) -> Unit
+    private val onItemClicked: (movie: Movie) -> Unit
 ) : RecyclerView.Adapter<MovieListAdapter.MovieViewHolder>() {
 
     private val posterPath = "https://image.tmdb.org/t/p/w342"

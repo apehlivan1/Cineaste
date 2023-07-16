@@ -1,4 +1,4 @@
-package com.example.cinaeste
+package com.example.cinaeste.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,9 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class SimpleSimilarStringAdapter(var list: List<Movie>) : RecyclerView.Adapter<SimpleSimilarStringAdapter.SimpleViewHolder>() {
+class SimpleStringAdapter(var list: List<String>) :RecyclerView.Adapter<SimpleStringAdapter.SimpleViewHolder>() {
+
     inner class SimpleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textElement = itemView.findViewById<TextView>(android.R.id.text1)!!
+        val textElement = itemView.findViewById<TextView>(android.R.id.text1)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SimpleViewHolder {
@@ -23,6 +24,6 @@ class SimpleSimilarStringAdapter(var list: List<Movie>) : RecyclerView.Adapter<S
     }
 
     override fun onBindViewHolder(holder: SimpleViewHolder, position: Int) {
-        holder.textElement.text=list[position].title
+        holder.textElement.text=list[position]
     }
 }

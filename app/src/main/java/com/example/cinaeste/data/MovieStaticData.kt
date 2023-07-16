@@ -1,5 +1,7 @@
 package com.example.cinaeste
 
+import com.example.cinaeste.data.Movie
+
 fun getFavoriteMovies(): List<Movie> {
     return listOf(
         Movie(1,"Pride and prejudice",

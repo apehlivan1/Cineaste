@@ -1,7 +1,9 @@
-package com.example.cinaeste
+package com.example.cinaeste.data
 
 import androidx.room.Embedded
 import androidx.room.Relation
+import com.example.cinaeste.data.Cast
+import com.example.cinaeste.data.Movie
 
 
 data class MovieWithCast(

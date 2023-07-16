@@ -1,5 +1,6 @@
-package com.example.cinaeste
+package com.example.cinaeste.data
 
+import com.example.cinaeste.*
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.GET

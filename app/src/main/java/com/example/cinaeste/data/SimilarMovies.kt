@@ -1,4 +1,4 @@
-package com.example.cinaeste
+package com.example.cinaeste.data
 
 import androidx.room.Entity
 

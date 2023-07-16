@@ -16,14 +16,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
+import com.example.cinaeste.data.Movie
+import com.example.cinaeste.viewmodel.MovieDetailViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 class MovieDetailActivity : AppCompatActivity() {
+    private var movieDetailViewModel =  MovieDetailViewModel()
     private lateinit var movie: Movie
     private lateinit var title : TextView
     private lateinit var overview : TextView
@@ -37,7 +36,6 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var deleteFavorite : Button
     private val posterPath = "https://image.tmdb.org/t/p/w780"
     private val backdropPath = "https://image.tmdb.org/t/p/w500"
-    private val scope = CoroutineScope(Job() + Dispatchers.Main)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie_detail)
@@ -54,15 +52,12 @@ class MovieDetailActivity : AppCompatActivity() {
 
         val extras = intent.extras
         if (extras != null) {
-            if (extras.containsKey("movie_title")) {
-                movie = getMovieByTitle(extras.getString("movie_title", ""))
-                populateDetails()
-            }
-            else if (extras.containsKey("movie_id") && !extras.containsKey("exists") ){
-                getMovie(extras.getLong("movie_id"))
+            if (extras.containsKey("movie_id") && !extras.containsKey("exists") ){
+                movieDetailViewModel.getMovie(extras.getLong("movie_id"), onSuccess = ::onSuccess, onError = ::onError )
             }
             else if (extras.containsKey("movie_id") && extras.containsKey("exists") ){
-                getMovieFromDB(this,extras.getLong("movie_id"))
+                movieDetailViewModel.getMovieFromDB(applicationContext, extras.getLong("movie_id"), onSuccess = ::onSuccess,
+                    onError = ::onError)
                 addFavorite.visibility= View.GONE
                 deleteFavorite.visibility = View.VISIBLE
             }
@@ -70,10 +65,10 @@ class MovieDetailActivity : AppCompatActivity() {
             finish()
         }
         addFavorite.setOnClickListener{
-            writeDB(this,movie)
+            writeDB()
         }
         deleteFavorite.setOnClickListener{
-            deleteDB(this,movie)
+            deleteDB()
         }
         website.setOnClickListener{
             showWebsite()
@@ -113,13 +108,6 @@ class MovieDetailActivity : AppCompatActivity() {
             .fallback(R.drawable.backdrop)
             .into(backdrop)
     }
-    private fun getMovieByTitle(name:String):Movie{
-        val movies: ArrayList<Movie> = arrayListOf()
-        movies.addAll(getRecentMovies())
-        movies.addAll(getFavoriteMovies())
-        val movie= movies.find { movie -> name == movie.title }
-        return movie?:Movie(0,"Test","Test","Test","Test","Test","Test")
-    }
     private fun showWebsite(){
         val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse(movie.homepage))
         try {
@@ -148,21 +136,8 @@ class MovieDetailActivity : AppCompatActivity() {
         val shareIntent = Intent.createChooser(intent, null)
         startActivity(shareIntent)
     }
-
-    fun getMovieDetails(query: Long){
-        scope.launch{
-            when (val result = MovieRepository.getMovie(query)) {
-                is Movie -> movieRetrieved(result)
-                else-> Log.v("meh","meh")
-            }
-        }
-    }
-    private fun movieRetrieved(movie:Movie){
-        this.movie =movie
-        populateDetails()
-    }
-    private fun onSuccess(movie:Movie){
-        this.movie =movie
+    private fun onSuccess(movie: Movie){
+        this.movie = movie
         populateDetails()
     }
 
@@ -186,37 +161,10 @@ class MovieDetailActivity : AppCompatActivity() {
         toast.show()
     }
 
-    private fun writeDB(context: Context, movie:Movie){
-        scope.launch{
-            when (val result = MovieRepository.writeFavorite(context,movie)) {
-                is String -> onSuccess1(result)
-                else-> onError()
-            }
-        }
+    private fun writeDB() {
+        movieDetailViewModel.writeDB(applicationContext, this.movie, onSuccess = ::onSuccess1, onError = ::onError)
     }
-    private fun deleteDB(context: Context, movie:Movie){
-        scope.launch {
-            when (val result = MovieRepository.deleteMovie(context,movie)) {
-                is String -> onSuccess2(result)
-                else-> onError()
-            }
-        }
-    }
-    private fun getMovie(query: Long){
-        scope.launch{
-            when (val result = MovieRepository.getMovie(query)) {
-                is Movie -> onSuccess(result)
-                else-> onError()
-            }
-        }
-    }
-    private fun getMovieFromDB(context: Context, id:Long){
-
-        scope.launch{
-            when (val result = MovieRepository.getMovieDB(context,id)) {
-                is Movie -> onSuccess(result)
-                else-> onError()
-            }
-        }
+    private fun deleteDB(){
+        movieDetailViewModel.deleteDB(applicationContext, this.movie, onSuccess = ::onSuccess2, onError = ::onError)
     }
 }

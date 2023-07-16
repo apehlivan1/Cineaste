@@ -1,26 +1,24 @@
-package com.example.cinaeste
+package com.example.cinaeste.view
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import com.example.cinaeste.R
+import com.example.cinaeste.adapters.SimpleCastStringAdapter
+import com.example.cinaeste.data.Cast
+import com.example.cinaeste.viewmodel.MovieDetailViewModel
 
 class ActorsFragment: Fragment() {
     private lateinit var actorsRV:RecyclerView
     private var actorsList = listOf<Cast>()
     private lateinit var actorsRVSimpleAdapter: SimpleCastStringAdapter
-    private val scope = CoroutineScope(Job() + Dispatchers.Main)
+    private var movieDetailViewModel =  MovieDetailViewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view:View = inflater.inflate(R.layout.fragment_actors, container, false)
@@ -29,10 +27,10 @@ class ActorsFragment: Fragment() {
 
         if (extras != null) {
             if (extras.containsKey("movie_id") && !extras.containsKey("exists") ){
-                getActorsById(extras.getLong("movie_id"))
+                movieDetailViewModel.getActorsById(extras.getLong("movie_id"), onSuccess = ::onSuccess, onError = ::onError)
             }
             else if (extras.containsKey("movie_id") && extras.containsKey("exists") ){
-                getActorsByIdDB(requireContext(),extras.getLong("movie_id"))
+                movieDetailViewModel.getActorsByIdDB(requireContext(), extras.getLong("movie_id"), onSuccess = ::onSuccess, onError = ::onError)
             }
         }
 
@@ -41,24 +39,6 @@ class ActorsFragment: Fragment() {
         actorsRVSimpleAdapter = SimpleCastStringAdapter(actorsList)
         actorsRV.adapter = actorsRVSimpleAdapter
         return view
-    }
-
-    private fun getActorsById(query: Long){
-
-        scope.launch{
-            when (val result =ActorMovieRepository.getCast(query)) {
-                is GetCastResponse -> onSuccess(result.cast)
-                else-> Log.v("meh","meh")
-            }
-        }
-    }
-    private fun getActorsByIdDB(context: Context, id: Long){
-        scope.launch{
-            when (val result = MovieRepository.getCastDB(context,id)) {
-                is List<*> -> onSuccess(result)
-                else-> onError()
-            }
-        }
     }
 
     @SuppressLint("NotifyDataSetChanged")

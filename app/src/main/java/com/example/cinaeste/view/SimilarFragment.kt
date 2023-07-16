@@ -1,7 +1,6 @@
-package com.example.cinaeste
+package com.example.cinaeste.view
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +9,10 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import com.example.cinaeste.R
+import com.example.cinaeste.adapters.SimpleSimilarStringAdapter
+import com.example.cinaeste.data.Movie
+import com.example.cinaeste.viewmodel.MovieDetailViewModel
 
 
 class SimilarFragment : Fragment() {
@@ -21,7 +20,7 @@ class SimilarFragment : Fragment() {
     private lateinit var similarRV: RecyclerView
     private var movieList = listOf<Movie>()
     private lateinit var similarRVSimpleAdapter: SimpleSimilarStringAdapter
-    private val scope = CoroutineScope(Job() + Dispatchers.Main)
+    private var movieDetailViewModel =  MovieDetailViewModel()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -33,10 +32,10 @@ class SimilarFragment : Fragment() {
 
         if (extras != null) {
             if (extras.containsKey("movie_id") && !extras.containsKey("exists") ){
-                getSimilarMoviesById(extras.getLong("movie_id"))
+                movieDetailViewModel.getSimilarMoviesById(extras.getLong("movie_id"),onSuccess = ::onSuccess,onError = ::onError)
             }
             else if (extras.containsKey("movie_id") && extras.containsKey("exists") ){
-                getSimilarMoviesByIdDB(requireContext(),extras.getLong("movie_id"))
+                movieDetailViewModel.getSimilarMoviesByIdDB(requireContext(),extras.getLong("movie_id"),onSuccess = ::onSuccess,onError = ::onError)
             }
         }
 
@@ -45,23 +44,6 @@ class SimilarFragment : Fragment() {
         similarRVSimpleAdapter = SimpleSimilarStringAdapter(movieList)
         similarRV.adapter = similarRVSimpleAdapter
         return view
-    }
-    private fun getSimilarMoviesById(query: Long) {
-        scope.launch{
-            when (val result = MovieRepository.getSimilarMovies(query)) {
-                is GetSimilarResponse -> onSuccess(result.movies)
-                else-> onError()
-            }
-        }
-    }
-
-    private fun getSimilarMoviesByIdDB(context: Context, id: Long){
-        scope.launch{
-            when (val result = MovieRepository.getSimilarMoviesDB(context,id)) {
-                is List<*> -> onSuccess(result)
-                else-> onError()
-            }
-        }
     }
     @SuppressLint("NotifyDataSetChanged")
     private fun onSuccess(movies: List<Movie>){

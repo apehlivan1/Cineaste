@@ -1,4 +1,4 @@
-package com.example.cinaeste
+package com.example.cinaeste.data
 
 import android.content.Context
 import androidx.room.Database

@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.cinaeste.data.Movie
 
 class MovieDetailResultActivity: AppCompatActivity() {
     private  var movie= Movie(0, "Test", "Test", "Test", "Test", "Test", "Test")
