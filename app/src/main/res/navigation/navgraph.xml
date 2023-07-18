@@ -6,14 +6,14 @@
 
     <fragment
         android:id="@+id/favoriteMoviesFragment"
-        android:name="com.example.cinaeste.view.FavoriteMoviesFragment"
+        android:name="com.example.cineaste.view.FavoriteMoviesFragment"
         android:label="FavoriteMoviesFragment" />
     <fragment
         android:id="@+id/recentMoviesFragment"
-        android:name="com.example.cinaeste.view.RecentMoviesFragment"
+        android:name="com.example.cineaste.view.RecentMoviesFragment"
         android:label="RecentMoviesFragment" />
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.example.cinaeste.view.SearchFragment"
+        android:name="com.example.cineaste.view.SearchFragment"
         android:label="SearchFragment" />
 </navigation>

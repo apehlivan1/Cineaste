@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/actorsFragment"
-        android:name="com.example.cinaeste.view.ActorsFragment"
+        android:name="com.example.cineaste.view.ActorsFragment"
         android:label="fragment_actors"
         tools:layout="@layout/fragment_actors" >
     </fragment>
     <fragment
         android:id="@+id/similarFragment"
-        android:name="com.example.cinaeste.view.SimilarFragment"
+        android:name="com.example.cineaste.view.SimilarFragment"
         android:label="fragment_similar"
         tools:layout="@layout/fragment_similar" >
     </fragment>
