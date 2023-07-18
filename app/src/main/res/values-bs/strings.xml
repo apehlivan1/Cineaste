@@ -4,7 +4,10 @@
     <string name="search">Pretraži</string>
     <string name="favorite">Omiljeni filmovi</string>
     <string name="recent">Novi filmovi</string>
-    <string name="favoritesText">Hello blank fragment</string>
-    <string name="recentTexts">Hello recentTexts fragment</string>
 
+    <string name="add_to_favorites">Dodaj u omiljene</string>
+    <string name="delete_from_favorites">Obriši iz omiljenih</string>
+    <string name="share_button">Podijeli</string>
+    <string name="backdrop_image">Pozadinska slika</string>
+    <string name="movie_poster">Plakat filma</string>
 </resources>

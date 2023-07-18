@@ -1,7 +1,6 @@
-package com.example.cinaeste
+package com.example.cinaeste.data
 
 import android.content.Context
-import com.example.cinaeste.data.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Call
@@ -79,14 +78,14 @@ object MovieRepository {
             return@withContext db.movieDao().getAll()
         }
     }
-    suspend fun deleteMovie(context: Context, movie: Movie): String?{
+    suspend fun deleteMovie(context: Context, movie: Movie): String? {
         return withContext(Dispatchers.IO){
             try {
                 val db = AppDatabase.getInstance(context)
                 val cast = db.movieDao().getMovieAndCastById(movie.id)
                 db.castDao().deleteCast(cast.cast)
                 val similar = db.movieDao().getSimilarMoviesById(movie.id)
-                val similarPairs = similar.similarMovies.map { similar -> SimilarMovies(movie.id, similar.id) }
+                val similarPairs = similar.similarMovies.map { similar2 -> SimilarMovies(movie.id, similar2.id) }
                 for(similarPair in similarPairs){
                     db.similarMoviesDao().deleteSimilar(similarPair)
                 }

@@ -1,7 +1,7 @@
 package com.example.cinaeste.viewmodel
 
 import android.content.Context
-import com.example.cinaeste.MovieRepository
+import com.example.cinaeste.data.MovieRepository
 import com.example.cinaeste.data.GetMoviesResponse
 import com.example.cinaeste.data.Movie
 import kotlinx.coroutines.CoroutineScope

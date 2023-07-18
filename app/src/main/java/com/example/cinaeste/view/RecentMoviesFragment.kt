@@ -23,6 +23,7 @@ class RecentMoviesFragment : Fragment() {
         val view =  inflater.inflate(R.layout.fragment_recent_movies, container, false)
         recentMovies = view.findViewById(R.id.recentMovies)
         recentMovies.layoutManager = GridLayoutManager(activity, 2)
+
         recentMoviesAdapter = MovieListAdapter(arrayListOf()) { movie -> showMovieDetails(movie) }
         recentMovies.adapter = recentMoviesAdapter
         movieListViewModel.getUpcoming2(onSuccess = ::onSuccess, onError = ::onError)
